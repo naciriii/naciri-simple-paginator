@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/naciriii/naciri-simple-paginator.svg?branch=master)](https://travis-ci.org/naciriii/naciri-simple-paginator)
 # naciri-simple-paginator
 This Module create pagination to your data listing dynamically.
 I created this module when I needed a very simple reusable pagination and I was so lazy and bored to search so I made mine. 
