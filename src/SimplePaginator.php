@@ -1,4 +1,10 @@
 <?php
+/**
+ * SimplePaginator.php
+ * @author    Naciriii <nnacir1938@hotmail.com
+ * @copyright 2019 Nacer Nsiri
+ * @see       https://github.com/naciriii/naciri-simple-paginator
+ */
 
 namespace Naciri;
 
