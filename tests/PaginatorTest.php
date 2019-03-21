@@ -9,7 +9,7 @@ class PaginatorTest extends TestCase
 
     public function setUp()
     {
-        $this->dbMock = new PDO('sqlite::memory');
+        $this->dbMock = new PDO('sqlite::memory:');
         $this->dbMock->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->initDb();
         $this->paginator = new Naciri\SimplePaginator($this->dbMock, "select * from users");
