@@ -29,7 +29,9 @@ class SimplePaginator
         $this->query = $query;
        
         $res = $this->db->query($this->query);
+        
         $this->total = count($res->fetchAll());
+        $this->limit = 10;
     }
 
     /**
@@ -61,6 +63,7 @@ class SimplePaginator
      */
     public function renderLinks($links, $listing_class)
     {
+        
         $last = ceil($this->total / $this->limit);
         $start = (($this->page - $links) > 0) ? $this->page - $links : 1;
         $end = (($this->page + $links) < $last) ? $this->page + $links : $last;
