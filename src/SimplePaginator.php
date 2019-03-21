@@ -36,7 +36,7 @@ class SimplePaginator
        
         $res = $this->db->query($this->query);
         
-        $this->total = count($res->fetchAll());
+        $this->total = count($res->fetchAll(self::FETCH_MODE));
         $this->limit = 10;
     }
 
