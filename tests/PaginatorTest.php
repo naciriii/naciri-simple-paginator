@@ -5,51 +5,47 @@ use PHPUnit\Framework\TestCase;
 class PaginatorTest extends TestCase
 {
     private $paginator;
-    public $data;
+    private $dbMock;
 
     public function setUp()
     {
-        $dbMock = new PDO('sqlite::memory');
-        $dbMock->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $dbMock->exec("DROP table if exists users;");
-        $createTable = $dbMock->exec("CREATE TABLE if not exists users (
-                login VARCHAR(30) NOT NULL,
-                name VARCHAR(30) NOT NULL,
-                email VARCHAR(50)
-                )");
-  
-       $q = $dbMock->prepare('insert into users (login,name,email) values("test","test","test")');
-       $q->execute();
-       $q = $dbMock->prepare('insert into users (login,name,email) values("test2","test2","test2")');
-       $q->execute();
-       $q = $dbMock->prepare('insert into users (login,name,email) values("test3","test3","test3")');
-       $q->execute();
-       $q = $dbMock->prepare('insert into users (login,name,email) values("test4","test4","test4")');
-       $q->execute();
-
-        $query = "select * from users";
-
-        $this->paginator = new Naciri\SimplePaginator($dbMock, $query);
-
-     
+        $this->dbMock = new PDO('sqlite::memory');
+        $this->dbMock->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->initDb();
+        $this->paginator = new Naciri\SimplePaginator($this->dbMock, "select * from users");
     }
     public function testTotal()
     {
-        $this->assertEquals($this->paginator->total,4);
+        $this->assertEquals($this->paginator->total, 10);
     }
     public function testFetchData()
     {
-        $this->assertNotNull($this->paginator->fetchData(4,2));
-        $this->assertEquals(count($this->paginator->fetchData(4,2)),4);
+        $this->assertNotNull($this->paginator->fetchData(4, 1)->data);
+        $this->assertEquals(count($this->paginator->fetchData(4, 1)->data), 4);
     }
-     public function testPaginatingFetchData()
+    public function testPaginatingFetchData()
     {
-        $this->assertNotNull($this->paginator->fetchData(1,2));
-        $this->assertEquals(count($this->paginator->fetchData(1,2)),2);
+        $this->assertNotNull($this->paginator->fetchData(2, 1)->data);
+        $this->assertEquals(count($this->paginator->fetchData(2, 1)->data), 2);
     }
 
     public function testRenderLinks()
     {
-        $this->assertNotNull($this->paginator->renderLinks(2,"test-class"));
+        $this->assertNotNull($this->paginator->renderLinks(1, "test-class"));
+    }
+    private function initDb()
+    {
+        $this->dbMock->exec("DROP table if exists users;");
+        $createTable = $this->dbMock->exec("CREATE TABLE if not exists users (
+                login VARCHAR(30) NOT NULL,
+                name VARCHAR(30) NOT NULL,
+                email VARCHAR(50)
+                )");
+
+        $q = $this->dbMock->prepare('insert into users (login,name,email) values(?, ?,?)');
+       
+        for ($i = 0; $i < 10; $i++) {
+            $q->execute(['testLogin'.$i, 'testName'.$i, 'testEmail'.$i]);
+        }
     }
 }
